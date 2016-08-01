@@ -6,6 +6,7 @@ import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +24,14 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            mProgressBar.setVisibility(View.VISIBLE);
+            switch (msg.what){
+                case 0:
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    mProgressBar.setProgress((Integer) msg.obj);
+                    break;
+            }
         }
     };
 
@@ -42,8 +50,24 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Message msg = new Message();
-                        handler.sendMessage(msg);
+                        Message msg1 = new Message();//设置可示
+                        msg1.what = 0;
+                        handler.sendMessage(msg1);
+                        for (int i = 1; i < 11 ; i++) {
+                            sleep();
+                            Message msg2 = new Message();//显示进度
+                            msg2.what = 1;
+                            msg2.obj = i * 10;
+                            handler.sendMessage(msg2);
+                        }
+                    }
+
+                    private void sleep() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }).start();
             }
