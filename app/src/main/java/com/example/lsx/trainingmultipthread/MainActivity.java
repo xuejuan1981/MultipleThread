@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     mProgressBar.setProgress((Integer) msg.obj);
                     break;
+                case 2:
+                    mImageView.setImageBitmap((Bitmap) msg.obj);
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    break;
             }
         }
     };
@@ -50,16 +54,22 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Message msg1 = new Message();//设置可示
+                        Message msg1 = handler.obtainMessage();//设置可示
                         msg1.what = 0;
                         handler.sendMessage(msg1);
                         for (int i = 1; i < 11 ; i++) {
                             sleep();
-                            Message msg2 = new Message();//显示进度
+                            Message msg2 = handler.obtainMessage();//显示进度
                             msg2.what = 1;
                             msg2.obj = i * 10;
                             handler.sendMessage(msg2);
                         }
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ic_launcher);
+                        Message msg3 = handler.obtainMessage();
+                        msg3.what = 2;
+                        msg3.obj = bitmap;
+                        handler.sendMessage(msg3);
                     }
 
                     private void sleep() {
