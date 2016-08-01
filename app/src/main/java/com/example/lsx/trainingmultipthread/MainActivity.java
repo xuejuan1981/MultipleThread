@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private Button mLoadButton;
     private Button mToastButton;
     private ProgressBar mProgressBar;
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +39,20 @@ public class MainActivity extends AppCompatActivity {
         mLoadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadImage();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message msg = new Message();
+                        handler.sendMessage(msg);
+                    }
+                }).start();
             }
         });
 
         mToastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"单线程",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "单线程", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -59,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            Log.d(TAG,"new Thread:" + Thread.currentThread().getName());
-            for (int i = 1 ; i < 11 ; i++) {
+            Log.d(TAG, "new Thread:" + Thread.currentThread().getName());
+            for (int i = 1; i < 11; i++) {
                 sleep();
                 publishProgress(i * 10);
             }
