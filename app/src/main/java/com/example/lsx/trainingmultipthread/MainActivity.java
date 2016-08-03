@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         mToastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "单线程", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "多线程", Toast.LENGTH_SHORT).show();
             }
         });
     }
